@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:news_app/models/nav_menu_item.dart';
 import 'package:news_app/screens/home_screen.dart';
 import 'package:news_app/screens/headline_news.dart';
+import 'package:news_app/screens/twitter_feed.dart';
 
 class NavigationDrawer extends StatefulWidget {
   @override
@@ -9,10 +10,10 @@ class NavigationDrawer extends StatefulWidget {
 }
 
 class _NavigationDrawerState extends State<NavigationDrawer> {
-
   List<NavMenuItem> navigationItem = [
     NavMenuItem('Explore', () => HomeScreen()),
-    NavMenuItem('Headlines', () => HeadlineNews())
+    NavMenuItem('Headlines', () => HeadlineNews()),
+    NavMenuItem('Twitter Feed', () => TwitterFeed()),
   ];
 
 //  List<String> _namesDrawer = [
@@ -36,6 +37,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
               title: Text(navigationItem[position].title),
               trailing: Icon(Icons.chevron_right),
               onTap: () {
+                Navigator.pop(context);
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) {
