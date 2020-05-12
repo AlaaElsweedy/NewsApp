@@ -1,6 +1,6 @@
 # news_app
 
-A new Flutter application.
+A new Flutter application that keeps you updated with what's happening around the globe🌎 with realtime NEWS📰
 
 ## Getting Started
 
