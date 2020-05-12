@@ -21,6 +21,12 @@ class _HeadlineNewsState extends State<HeadlineNews> with SingleTickerProviderSt
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: NavigationDrawer(),
