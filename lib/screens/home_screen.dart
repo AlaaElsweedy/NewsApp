@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:news_app/shared_ui/drawer.dart';
+import 'package:news_app/shared_ui/navigation_drawer.dart';
 import 'package:news_app/home_tabs/favourite.dart';
 import 'package:news_app/home_tabs/popular.dart';
 import 'package:news_app/home_tabs/whatsnew.dart';

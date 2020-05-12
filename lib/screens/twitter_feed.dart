@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:news_app/models/nav_menu_item.dart';
+import 'package:news_app/shared_ui/navigation_drawer.dart';
 
 class TwitterFeed extends StatefulWidget {
   @override
@@ -16,7 +16,7 @@ class _TwitterFeedState extends State<TwitterFeed> {
         ],
         title: Text('Twitter Feed'),
       ),
-      drawer: Drawer(),
+      drawer: NavigationDrawer(),
       body: ListView.builder(
         itemBuilder: (context, position) {
           return Card(
