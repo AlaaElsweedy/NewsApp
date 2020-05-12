@@ -14,7 +14,7 @@ class _TwitterFeedState extends State<TwitterFeed> {
         actions: <Widget>[
           IconButton(icon: Icon(Icons.search), onPressed: () {}),
         ],
-        title: Text('Twitter Feed'),
+        title: Text('Twitter Feeds'),
       ),
       drawer: NavigationDrawer(),
       body: ListView.builder(
@@ -62,7 +62,7 @@ class _TwitterFeedState extends State<TwitterFeed> {
   Widget _cardBody() {
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
-      child: Text('We also talk about future of work as robots '),
+      child: Text('We also talk about future of work as robots'),
     );
   }
 

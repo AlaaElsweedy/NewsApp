@@ -3,6 +3,8 @@ import 'package:news_app/models/nav_menu_item.dart';
 import 'package:news_app/screens/home_screen.dart';
 import 'package:news_app/screens/headline_news.dart';
 import 'package:news_app/screens/twitter_feed.dart';
+import 'package:news_app/screens/instagram_feed.dart';
+import 'package:news_app/screens/facebook_feed.dart';
 
 class NavigationDrawer extends StatefulWidget {
   @override
@@ -13,7 +15,9 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
   List<NavMenuItem> navigationItem = [
     NavMenuItem('Explore', () => HomeScreen()),
     NavMenuItem('Headlines', () => HeadlineNews()),
-    NavMenuItem('Twitter Feed', () => TwitterFeed()),
+    NavMenuItem('Twitter Feeds', () => TwitterFeed()),
+    NavMenuItem('Instagram Feeds', () => InstagramFeed()),
+    NavMenuItem('Facebook Feeds', () => FacebookFeed()),
   ];
 
 //  List<String> _namesDrawer = [
