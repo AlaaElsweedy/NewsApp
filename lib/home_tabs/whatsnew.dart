@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/api/posts_api.dart';
+import 'dart:async';
+import 'package:timeago/timeago.dart' as timeago;
+
+import 'package:news_app/models/posts.dart';
 
 class WHATSNEW extends StatefulWidget {
   @override
@@ -6,14 +11,13 @@ class WHATSNEW extends StatefulWidget {
 }
 
 class _WHATSNEWState extends State<WHATSNEW> {
+  PostsApi postsApi = PostsApi();
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
-        children: <Widget>[
-          _drawHeader(),
-          _topStories(),
-        ],
+        children: <Widget>[_drawHeader(), _topStories(), _drawRecentUpdate()],
       ),
     );
   }
@@ -65,14 +69,22 @@ class _WHATSNEWState extends State<WHATSNEW> {
             padding: EdgeInsets.only(left: 5, right: 5),
             child: Card(
               elevation: 2,
-              child: Column(
-                children: <Widget>[
-                  _singleCard(),
-                  _cardDivider(),
-                  _singleCard(),
-                  _cardDivider(),
-                  _singleCard(),
-                ],
+              child: FutureBuilder(
+                future: postsApi.fetchWhatsNews(),
+                builder: (context, snapshot) {
+                  Posts post1 = snapshot.data[0];
+                  Posts post2 = snapshot.data[1];
+                  Posts post3 = snapshot.data[2];
+                  return Column(
+                    children: <Widget>[
+                      _singleCard(post1),
+                      _cardDivider(),
+                      _singleCard(post2),
+                      _cardDivider(),
+                      _singleCard(post3),
+                    ],
+                  );
+                },
               ),
             ),
           ),
@@ -80,21 +92,25 @@ class _WHATSNEWState extends State<WHATSNEW> {
             padding: EdgeInsets.only(top: 20, left: 20, bottom: 15),
             child: _drawTitle('Recent Updates'),
           ),
-          Padding(
-            padding: EdgeInsets.only(left: 5, right: 5),
-            child: Column(
-              children: <Widget>[
-                _drawUpdatesCard(Colors.deepOrange, 'Verttel is ferrari number one'),
-                _drawUpdatesCard(Colors.lime.shade600, 'The city in Pakistan that loves'),
-              ],
-            ),
-          ),
         ],
       ),
     );
   }
 
-  Widget _singleCard() {
+  Widget _drawRecentUpdate() {
+    return Padding(
+      padding: EdgeInsets.only(left: 5, right: 5),
+      child: Column(
+        children: <Widget>[
+          _drawUpdatesCard(Colors.deepOrange, 'Verttel is ferrari number one'),
+          _drawUpdatesCard(
+              Colors.lime.shade600, 'The city in Pakistan that loves'),
+        ],
+      ),
+    );
+  }
+
+  Widget _singleCard(Posts post) {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -103,14 +119,14 @@ class _WHATSNEWState extends State<WHATSNEW> {
           SizedBox(
             width: 130,
             height: 130,
-            child: Image.asset('assets/images/body-bg.jpg'),
+            child: Image.network(post.featuredImage, fit: BoxFit.cover,),
           ),
           SizedBox(width: 16),
           Expanded(
             child: Column(
               children: <Widget>[
                 Text(
-                  'The world global warming annual summit',
+                  post.title,
                   style: TextStyle(
                       color: Colors.black87, fontWeight: FontWeight.bold),
                 ),
@@ -131,7 +147,7 @@ class _WHATSNEWState extends State<WHATSNEW> {
                           color: Colors.black54,
                         ),
                         Text(
-                          '15 min',
+                          _parseHumanDateTime(post.dateWritten),
                           style: TextStyle(
                             color: Colors.black54,
                           ),
@@ -146,6 +162,12 @@ class _WHATSNEWState extends State<WHATSNEW> {
         ],
       ),
     );
+  }
+
+  String _parseHumanDateTime(String dateTime){
+    Duration timeAgo = DateTime.now().difference(DateTime.parse(dateTime));
+    DateTime theDifference = DateTime.now().subtract(timeAgo);
+    return timeago.format(theDifference);
   }
 
   Widget _cardDivider() {
@@ -198,7 +220,8 @@ class _WHATSNEWState extends State<WHATSNEW> {
           ),
           Container(
             margin: EdgeInsets.only(left: 8, bottom: 8),
-            child: Text(text,
+            child: Text(
+              text,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
             ),
           ),

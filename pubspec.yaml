@@ -31,6 +31,7 @@ dependencies:
   page_view_indicator: ^2.0.4
   shared_preferences: ^0.5.7+1
   http: ^0.12.1
+  timeago: ^2.0.26
 
 dev_dependencies:
   flutter_test:

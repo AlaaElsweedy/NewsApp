@@ -3,7 +3,6 @@ import 'package:news_app/shared_ui/navigation_drawer.dart';
 import 'package:news_app/home_tabs/favourite.dart';
 import 'package:news_app/home_tabs/popular.dart';
 import 'package:news_app/home_tabs/whatsnew.dart';
-import 'package:news_app/api/authors_api.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -17,7 +16,6 @@ class _HomeScreenState extends State<HomeScreen>
 
   TabController _tabController;
 
-  AuthorsApi authorsApi = AuthorsApi();
 
   @override
   void initState() {
@@ -33,8 +31,6 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-
-    authorsApi.fetchAllAuthors();
 
     return Scaffold(
       drawer: NavigationDrawer(),
