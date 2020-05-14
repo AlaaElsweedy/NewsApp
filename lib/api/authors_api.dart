@@ -6,7 +6,7 @@ import 'package:news_app/utilities/api_utilities.dart';
 
 class AuthorsApi {
   Future<List<Authors>> fetchAllAuthors() async {
-    List<Authors> listAuthors = [];
+    List<Authors> listAuthors = List<Authors>();
 
     String allAuthorsApi = base_api + all_authors_api;
     var response = await http.get(allAuthorsApi);

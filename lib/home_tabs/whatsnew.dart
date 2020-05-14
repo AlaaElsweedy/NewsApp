@@ -17,7 +17,7 @@ class _WHATSNEWState extends State<WHATSNEW> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
-        children: <Widget>[_drawHeader(), _topStories(), _drawRecentUpdate()],
+        children: <Widget>[_drawHeader(), _drawTopStories(), _drawRecentUpdate()],
       ),
     );
   }
@@ -55,14 +55,14 @@ class _WHATSNEWState extends State<WHATSNEW> {
     );
   }
 
-  Widget _topStories() {
+  Widget _drawTopStories() {
     return Container(
-      color: Colors.grey.shade300,
+      color: Colors.grey.shade100,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(top: 20, left: 20, bottom: 15),
+          Padding(
+            padding: const EdgeInsets.only(left: 16, top: 16),
             child: _drawTitle('Top Stories'),
           ),
           Padding(
@@ -87,10 +87,6 @@ class _WHATSNEWState extends State<WHATSNEW> {
                 },
               ),
             ),
-          ),
-          Container(
-            padding: EdgeInsets.only(top: 20, left: 20, bottom: 15),
-            child: _drawTitle('Recent Updates'),
           ),
         ],
       ),
@@ -119,7 +115,10 @@ class _WHATSNEWState extends State<WHATSNEW> {
           SizedBox(
             width: 130,
             height: 130,
-            child: Image.network(post.featuredImage, fit: BoxFit.cover,),
+            child: Image.network(
+              post.featuredImage,
+              fit: BoxFit.cover,
+            ),
           ),
           SizedBox(width: 16),
           Expanded(
@@ -131,30 +130,32 @@ class _WHATSNEWState extends State<WHATSNEW> {
                       color: Colors.black87, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      'Michael Adams',
-                      style: TextStyle(
-                        color: Colors.black54,
-                      ),
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Icon(
-                          Icons.timer,
+                FittedBox(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'Michael Adams',
+                        style: TextStyle(
                           color: Colors.black54,
                         ),
-                        Text(
-                          _parseHumanDateTime(post.dateWritten),
-                          style: TextStyle(
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Icon(
+                            Icons.timer,
                             color: Colors.black54,
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          Text(
+                            _parseHumanDateTime(post.dateWritten),
+                            style: TextStyle(
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -164,7 +165,7 @@ class _WHATSNEWState extends State<WHATSNEW> {
     );
   }
 
-  String _parseHumanDateTime(String dateTime){
+  String _parseHumanDateTime(String dateTime) {
     Duration timeAgo = DateTime.now().difference(DateTime.parse(dateTime));
     DateTime theDifference = DateTime.now().subtract(timeAgo);
     return timeago.format(theDifference);
@@ -242,6 +243,35 @@ class _WHATSNEWState extends State<WHATSNEW> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _loading() {
+    return Container(
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  Widget _connectionError(){
+    return Container(
+      padding: EdgeInsets.all(16),
+      child: Text('Connection error!!!'),
+    );
+  }
+
+  Widget _error(var error){
+    return Container(
+      padding: EdgeInsets.all(16),
+      child: Text(error.toString()),
+    );
+  }
+
+  Widget _noData(){
+    return Container(
+      padding: EdgeInsets.all(16),
+      child: Text('No Data Available'),
     );
   }
 }
