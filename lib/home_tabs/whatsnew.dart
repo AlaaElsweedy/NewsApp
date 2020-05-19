@@ -17,7 +17,11 @@ class _WHATSNEWState extends State<WHATSNEW> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
-        children: <Widget>[_drawHeader(), _drawTopStories(), _drawRecentUpdate()],
+        children: <Widget>[
+          _drawHeader(),
+          _drawTopStories(),
+          _drawRecentUpdate()
+        ],
       ),
     );
   }
@@ -71,19 +75,48 @@ class _WHATSNEWState extends State<WHATSNEW> {
               elevation: 2,
               child: FutureBuilder(
                 future: postsApi.fetchWhatsNews(),
-                builder: (context, snapshot) {
-                  Posts post1 = snapshot.data[0];
-                  Posts post2 = snapshot.data[1];
-                  Posts post3 = snapshot.data[2];
-                  return Column(
-                    children: <Widget>[
-                      _singleCard(post1),
-                      _cardDivider(),
-                      _singleCard(post2),
-                      _cardDivider(),
-                      _singleCard(post3),
-                    ],
-                  );
+                // ignore: missing_return
+                builder: (context, AsyncSnapshot snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState
+                        .waiting: // لسه مبعدش للسيرفر لسه عملية الاتصال بالانترنت ممكن متكنش اساسا كملت
+                      // بيجاول ياخد صلاحيات الاتصال بالانترنت
+                      return _loading();
+                      break;
+                    case ConnectionState.active: // تم الاتصال بالانترنت وال api
+                      return _loading();
+                      break;
+                    case ConnectionState.none: // فيه حاجة غلط زي مثلا مفيش انترنت
+                      return _connectionError();
+                      break;
+                    case ConnectionState.done: // هنا مش معناه ان معايا بيانات القصد هنا ان عملية الطلب والجواب تمت
+                      if (snapshot.error != null) {
+                        return _error(snapshot.error);
+                      } else {
+                        if (snapshot.hasData) {
+                          List<Posts> postsLength = snapshot.data;
+                          if (postsLength.length >= 3) {
+                            Posts post1 = snapshot.data[0];
+                            Posts post2 = snapshot.data[1];
+                            Posts post3 = snapshot.data[2];
+                            return Column(
+                              children: <Widget>[
+                                _singleCard(post1),
+                                _cardDivider(),
+                                _singleCard(post2),
+                                _cardDivider(),
+                                _singleCard(post3),
+                              ],
+                            );
+                          }else{
+                            return _noData();
+                          }
+                        } else {
+                          return _noData();
+                        }
+                      }
+                      break;
+                  }
                 },
               ),
             ),
@@ -96,12 +129,35 @@ class _WHATSNEWState extends State<WHATSNEW> {
   Widget _drawRecentUpdate() {
     return Padding(
       padding: EdgeInsets.only(left: 5, right: 5),
-      child: Column(
-        children: <Widget>[
-          _drawUpdatesCard(Colors.deepOrange, 'Verttel is ferrari number one'),
-          _drawUpdatesCard(
-              Colors.lime.shade600, 'The city in Pakistan that loves'),
-        ],
+      child: FutureBuilder(
+        future: postsApi.fetchRecentUpdates(),
+        // ignore: missing_return
+        builder: (context, snapshot) {
+          switch(snapshot.connectionState){
+            case ConnectionState.none:
+              return _connectionError();
+              break;
+            case ConnectionState.active:
+              return _loading();
+              break;
+            case ConnectionState.waiting:
+              return _loading();
+              break;
+            case ConnectionState.done:
+              if(snapshot.hasError){
+                return _error(snapshot.error);
+              }else{
+                return Column(
+                  children: <Widget>[
+                    _drawUpdatesCard(Colors.deepOrange, snapshot.data[0]),
+                    _drawUpdatesCard(Colors.lime.shade600, snapshot.data[1]),
+                  ],
+                );
+              }
+              break;
+          }
+
+        },
       ),
     );
   }
@@ -189,7 +245,7 @@ class _WHATSNEWState extends State<WHATSNEW> {
     );
   }
 
-  Widget _drawUpdatesCard(Color color, String text) {
+  Widget _drawUpdatesCard(Color color, Posts posts) {
     return Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,7 +255,7 @@ class _WHATSNEWState extends State<WHATSNEW> {
             height: MediaQuery.of(context).size.height * 0.30,
             decoration: BoxDecoration(
               image: DecorationImage(
-                  image: ExactAssetImage('assets/images/body-bg.jpg'),
+                  image: NetworkImage(posts.featuredImage),
                   fit: BoxFit.cover),
             ),
           ),
@@ -222,7 +278,7 @@ class _WHATSNEWState extends State<WHATSNEW> {
           Container(
             margin: EdgeInsets.only(left: 8, bottom: 8),
             child: Text(
-              text,
+              posts.title,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
             ),
           ),
@@ -235,7 +291,7 @@ class _WHATSNEWState extends State<WHATSNEW> {
                   color: Colors.grey,
                 ),
                 Text(
-                  '15 min',
+                  _parseHumanDateTime(posts.dateWritten),
                   style: TextStyle(color: Colors.grey),
                 ),
               ],
@@ -248,30 +304,31 @@ class _WHATSNEWState extends State<WHATSNEW> {
 
   Widget _loading() {
     return Container(
+      padding: EdgeInsets.all(16),
       child: Center(
         child: CircularProgressIndicator(),
       ),
     );
   }
 
-  Widget _connectionError(){
+  Widget _connectionError() {
     return Container(
       padding: EdgeInsets.all(16),
       child: Text('Connection error!!!'),
     );
   }
 
-  Widget _error(var error){
+  Widget _error(var error) {
     return Container(
       padding: EdgeInsets.all(16),
       child: Text(error.toString()),
     );
   }
 
-  Widget _noData(){
+  Widget _noData() {
     return Container(
       padding: EdgeInsets.all(16),
-      child: Text('No Data Available'),
+      child: Text('No Data Available!'),
     );
   }
 }

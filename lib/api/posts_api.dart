@@ -34,4 +34,36 @@ class PostsApi {
     }
     return postsList;
   }
+
+  Future<List<Posts>> fetchRecentUpdates() async {
+    List<Posts> postsList = List<Posts>();
+
+    String whatsNewsApi = base_api + recent_updates_api;
+    var response = await http.get(whatsNewsApi);
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      var data = jsonData["data"];
+      for (var item in data) {
+        Posts posts = Posts(
+            id: item["id"].toString(),
+            title: item["title"].toString(),
+            content: item["content"].toString(),
+            dateWritten: item["date_written"].toString(),
+            featuredImage: item["featured_image"].toString(),
+            votesUp: item["votes_up"],
+            votesDown: item["votes_down"],
+            votersUp: (item["voters_up"] == null)
+                ? List<int>()
+                : jsonDecode(item["voters_up"]),
+            votersDown: (item["voters_down"] == null)
+                ? List<int>()
+                : jsonDecode(item["voters_down"]),
+            userId: item["user_id"],
+            categoryId: item["gategory_id"]);
+        postsList.add(posts);
+      }
+    }
+    return postsList;
+  }
+
 }
