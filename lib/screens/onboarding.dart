@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:page_view_indicator/page_view_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:news_app/models/pagemodel.dart';
 import 'home_screen.dart';
 
 class OnBoarding extends StatefulWidget {
@@ -9,22 +10,36 @@ class OnBoarding extends StatefulWidget {
 }
 
 class _OnBoardingState extends State<OnBoarding> {
-  List<String> images = [
-    "assets/images/groot.jpg",
-    "assets/images/groot2.jpg",
-    "assets/images/groot3.jpg",
-    "assets/images/groot4.jpg"
-  ];
+  List<PageModel> pages;
 
-  List<IconData> icons = [
-    Icons.ac_unit,
-    Icons.account_balance,
-    Icons.album,
-    Icons.whatshot
-  ];
+  void _addPages() {
+    pages = List<PageModel>();
+    pages.add(PageModel(
+        'Welcome',
+        '1- Making friends is easy as waving your hand back and forth in easy step',
+        Icons.ac_unit,
+        'assets/images/groot.jpg'));
+    pages.add(PageModel(
+        'Alarm',
+        '2- Making friends is easy as waving your hand back and forth in easy step',
+        Icons.access_alarms,
+        'assets/images/groot2.jpg'));
+    pages.add(PageModel(
+        'Print',
+        '3- Making friends is easy as waving your hand back and forth in easy step',
+        Icons.map,
+        'assets/images/groot3.jpg'));
+    pages.add(PageModel(
+        'Map',
+        '4- Making friends is easy as waving your hand back and forth in easy step',
+        Icons.ac_unit,
+        'assets/images/groot4.jpg'));
+  }
 
   @override
   Widget build(BuildContext context) {
+    _addPages();
+
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -35,7 +50,7 @@ class _OnBoardingState extends State<OnBoarding> {
                   Container(
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: ExactAssetImage(images[index]),
+                        image: ExactAssetImage(pages[index].image),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -48,14 +63,14 @@ class _OnBoardingState extends State<OnBoarding> {
                     children: <Widget>[
                       Transform.translate(
                         child: Icon(
-                          icons[index],
+                          pages[index].icon,
                           color: Colors.white,
                           size: 150,
                         ),
                         offset: Offset(0, -100),
                       ),
                       Text(
-                        "Welcome!",
+                        pages[index].title,
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 40,
@@ -66,7 +81,7 @@ class _OnBoardingState extends State<OnBoarding> {
                         padding:
                             const EdgeInsets.only(left: 40, right: 40, top: 10),
                         child: Text(
-                          "Making friends is easy as waving your hand back and forth in easy step",
+                          pages[index].description,
                           style: TextStyle(color: Colors.grey, fontSize: 16),
                           textAlign: TextAlign.center,
                         ),
@@ -76,7 +91,7 @@ class _OnBoardingState extends State<OnBoarding> {
                 ],
               );
             },
-            itemCount: images.length,
+            itemCount: pages.length,
             onPageChanged: (index) {
               _pageIndexNotifier.value = index;
             },
@@ -141,7 +156,7 @@ class _OnBoardingState extends State<OnBoarding> {
   Widget _displayCircleIndicator() {
     return PageViewIndicator(
       pageIndexNotifier: _pageIndexNotifier,
-      length: images.length,
+      length: pages.length,
       normalBuilder: (animationController, index) => Circle(
         size: 8.0,
         color: Colors.grey,
@@ -161,8 +176,7 @@ class _OnBoardingState extends State<OnBoarding> {
 
   ValueNotifier<int> _pageIndexNotifier = ValueNotifier(0);
 
-  void _updateSeen() async{
-
+  void _updateSeen() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('seen', true);
   }

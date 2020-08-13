@@ -3,6 +3,10 @@ import 'package:news_app/shared_ui/navigation_drawer.dart';
 import 'package:news_app/home_tabs/favourite.dart';
 import 'package:news_app/home_tabs/popular.dart';
 import 'package:news_app/home_tabs/whatsnew.dart';
+import 'pages/about_us.dart';
+import 'pages/settings.dart';
+import 'pages/contact.dart';
+import 'pages/help.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -13,9 +17,7 @@ enum PopOutMenu { HELP, ABOUT, CONTACT, SETTINGS }
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
-
   TabController _tabController;
-
 
   @override
   void initState() {
@@ -31,7 +33,6 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       drawer: NavigationDrawer(),
       appBar: AppBar(
@@ -87,7 +88,30 @@ class _HomeScreenState extends State<HomeScreen>
           ),
         ];
       },
-      onSelected: (PopOutMenu menu) {},
+      onSelected: (PopOutMenu menu) {
+        switch (menu) {
+          case PopOutMenu.ABOUT:
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return AboutUs();
+            }));
+            break;
+          case PopOutMenu.CONTACT:
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return Contact();
+            }));
+            break;
+          case PopOutMenu.SETTINGS:
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return Settings();
+            }));
+            break;
+          case PopOutMenu.HELP:
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return Help();
+            }));
+            break;
+        }
+      },
     );
   }
 }
