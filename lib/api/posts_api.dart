@@ -13,7 +13,7 @@ class PostsApi {
       var jsonData = jsonDecode(response.body);
       var data = jsonData["data"];
       for (var item in data) {
-        Posts Post = Posts(
+        Posts post = Posts(
             id: item["id"].toString(),
             title: item["title"].toString(),
             content: item["content"].toString(),
@@ -29,7 +29,7 @@ class PostsApi {
                 : jsonDecode(item["voters_down"]),
             userId: item["user_id"],
             categoryId: item["gategory_id"]);
-        postList.add(Post);
+        postList.add(post);
       }
     }
     return postList;

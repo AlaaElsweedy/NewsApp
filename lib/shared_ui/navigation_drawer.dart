@@ -5,6 +5,8 @@ import 'package:news_app/screens/headline_news.dart';
 import 'package:news_app/screens/twitter_feed.dart';
 import 'package:news_app/screens/instagram_feed.dart';
 import 'package:news_app/screens/facebook_feed.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:news_app/screens/pages/login.dart';
 
 class NavigationDrawer extends StatefulWidget {
   @override
@@ -12,26 +14,51 @@ class NavigationDrawer extends StatefulWidget {
 }
 
 class _NavigationDrawerState extends State<NavigationDrawer> {
+  bool isLoggedIn = false;
+  String token;
+  SharedPreferences sharedPreferences;
+
   List<NavMenuItem> navigationItem = [
     NavMenuItem('Explore', () => HomeScreen()),
     NavMenuItem('Headlines', () => HeadlineNews()),
     NavMenuItem('Twitter Feeds', () => TwitterFeed()),
     NavMenuItem('Instagram Feeds', () => InstagramFeed()),
     NavMenuItem('Facebook Feeds', () => FacebookFeed()),
+    NavMenuItem('Login', () => Login()),
   ];
 
-//  List<String> _namesDrawer = [
-//    'Explore',
-//    'Heading News',
-//    'Read Later',
-//    'Videos',
-//    'Photos',
-//    'Setting',
-//    'Logout'
-//  ];
+  _checkToken() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    token = sharedPreferences.getString('token');
+    setState(() {
+      if (token == null) {
+        isLoggedIn = false;
+      } else {
+        isLoggedIn = true;
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (isLoggedIn) {
+      navigationItem.add(NavMenuItem("Logout", _logOut));
+    }
+  }
+
+  _logOut() {
+    if (sharedPreferences != null) {
+      sharedPreferences.remove(token);
+    }
+    return HomeScreen();
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (this.mounted) {
+      _checkToken();
+    }
     return Drawer(
       child: Padding(
         padding: const EdgeInsets.only(top: 40, left: 16),
